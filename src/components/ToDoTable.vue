@@ -45,44 +45,37 @@ export default {
     return {
       modalOpen: false,
       todoForm: {
+        id: -1,
         Subject: "",
         Description: ""
       },
-      tableData: [
-        {
-          Subject: "Tom",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "Jack",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "ABC",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "Despacito",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "Despacito",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "Despacito",
-          Description: "No. 189, Grove St, Los Angeles"
-        },
-        {
-          Subject: "Despacito",
-          Description: "No. 189, Grove St, Los Angeles"
-        }
-      ]
+      tableData: []
     };
   },
+  created() {
+    this.$axios.get("/getAll").then(
+      res => {
+        this.tableData = res.data;
+      },
+      err => {
+        alert(err);
+      }
+    );
+  },
+
   methods: {
-    deleteRow: (index, tableData) => {
+    deleteRow(index, tableData) {
+      let removedData = tableData[index];
       tableData.splice(index, 1);
+      // axios post to remove data in database
+      this.$axios.get("/delete", { params: { id: removedData.id } }).then(
+        res => {
+          // console.log(res);
+        },
+        err => {
+          alert(err);
+        }
+      );
     },
 
     editRow(index, tableData) {
@@ -92,6 +85,18 @@ export default {
       })
         .then(({ value }) => {
           tableData[index].Description = value;
+          const itemId = tableData[index].id;
+          this.$axios
+            .post(
+              "/editDescription",
+              this.qs.stringify({ id: itemId, Description: value })
+            )
+            .then(
+              res => {},
+              err => {
+                alert(err);
+              }
+            );
           this.$message({
             type: "success",
             message: "Description edited successfully"
@@ -110,13 +115,25 @@ export default {
       this.modalOpen = false;
     },
     addRow(todoForm) {
+      const sub = todoForm.Subject;
+      const des = todoForm.Description;
       this.tableData.unshift({
-        Subject: todoForm.Subject,
-        Description: todoForm.Description
+        Subject: sub,
+        Description: des
       });
       todoForm.Subject = "";
       todoForm.Description = "";
       this.modalOpen = false;
+      this.$axios
+        .post("/add", this.qs.stringify({ Subject: sub, Description: des }))
+        .then(
+          res => {
+            // console.log(res);
+          },
+          err => {
+            alert(err);
+          }
+        );
     }
   }
 };
