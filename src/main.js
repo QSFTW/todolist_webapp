@@ -10,7 +10,7 @@ axios.defaults.baseURL = "localhost:9000";
 Vue.prototype.$axios = axios;
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded; charset=UTF-8";
-
+axios.defaults.withCredentials = true;
 Vue.prototype.qs = qs;
 
 Vue.config.productionTip = false;
