@@ -6,7 +6,7 @@ import qs from "qs";
 
 import App from "./App.vue";
 
-axios.defaults.baseURL = "http://localhost:9000";
+axios.defaults.baseURL = "localhost:9000";
 Vue.prototype.$axios = axios;
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded; charset=UTF-8";
