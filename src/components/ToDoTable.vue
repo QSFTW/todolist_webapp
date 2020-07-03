@@ -45,7 +45,7 @@ export default {
     return {
       modalOpen: false,
       todoForm: {
-        id: -1,
+        _id: -1,
         Subject: "",
         Description: ""
       },
@@ -53,7 +53,7 @@ export default {
     };
   },
   created() {
-    this.$axios.get("/getAll").then(
+    this.$axios.get("/todo/getAll").then(
       res => {
         this.tableData = res.data;
       },
@@ -68,7 +68,7 @@ export default {
       let removedData = tableData[index];
       tableData.splice(index, 1);
       // axios post to remove data in database
-      this.$axios.get("/delete", { params: { id: removedData.id } }).then(
+      this.$axios.get("/todo/delete/" + removedData._id).then(
         res => {
           // console.log(res);
         },
@@ -85,11 +85,11 @@ export default {
       })
         .then(({ value }) => {
           tableData[index].Description = value;
-          const itemId = tableData[index].id;
+          const itemId = tableData[index]._id;
           this.$axios
             .post(
-              "/editDescription",
-              this.qs.stringify({ id: itemId, Description: value })
+              "/todo/editDescription/" + itemId,
+              this.qs.stringify({ Description: value })
             )
             .then(
               res => {},
@@ -125,7 +125,10 @@ export default {
       todoForm.Description = "";
       this.modalOpen = false;
       this.$axios
-        .post("/add", this.qs.stringify({ Subject: sub, Description: des }))
+        .post(
+          "/todo/add",
+          this.qs.stringify({ Subject: sub, Description: des })
+        )
         .then(
           res => {
             // console.log(res);
