@@ -1,10 +1,10 @@
 <template>
   <el-container>
     <el-header>
-      <h1>Todo List of {{userName}}</h1>
+      <h1>Public Todo List</h1>
     </el-header>
     <el-main>
-      <h3>Main</h3>
+      <h3>Everyone can add an item on this list!</h3>
       <div class="center">
         <ToDoTable/>
       </div>
